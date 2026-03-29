@@ -1,0 +1,15 @@
+[submodule "libs/qiskit"]
+	path = libs/qiskit
+	url = https://github.com/quang2097/qiskit.git
+[submodule "libs/qiskit-machine-learning"]
+	path = libs/qiskit-machine-learning
+	url = https://github.com/quang2097/qiskit-machine-learning.git
+[submodule "libs/pennylane"]
+	path = libs/pennylane
+	url = https://github.com/quang2097/pennylane.git
+[submodule "libs/numpy"]
+	path = libs/numpy
+	url = https://github.com/numpy/numpy.git
+[submodule "Learning_material/quantum-machine-learning"]
+	path = Learning_material/quantum-machine-learning
+	url = https://github.com/sonamghosh/quantum-machine-learning.git

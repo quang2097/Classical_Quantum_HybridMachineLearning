@@ -1,0 +1,18 @@
+#My test files
+tester.ipynb
+Hybrid_tester.py
+Quantum_tester.py
+printTree.py
+tester.py
+
+#shuffled datas/zipped dataset/datas
+shuffled_datas
+*.zip
+*.csv
+CTU
+dataset
+IDS2017
+ToN-IoT
+
+#url files
+Paper
