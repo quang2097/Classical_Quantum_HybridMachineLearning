@@ -24,3 +24,6 @@ Paper
 #theoretical non-functional models
 Quantum
 quantum_models.ipynb
+
+#auto-generated files
+__pycache__

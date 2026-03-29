@@ -1,16 +1,13 @@
 #Load & Merge Attack and Sensor Data
 import pandas as pd
+from pandas import DataFrame
 import sys
 from pathlib import Path
 
-def shuffle():
-    print("select data")
-    print("1:dataset    2:CTU  3:IDS2017   4:ToN-IoT")
-
-    i = int(input())
+def shuffle(self, i:int) -> None:
     csv_files = []
     script_location = Path(__file__).resolve().parent
-    name = script_location / "invalidData.csv"
+    name = script_location / "shuffled_datas" / "invalidData.csv"
 
     # Load the dataset files from personal drive
     if i <= 1:
@@ -71,10 +68,22 @@ def shuffle():
     dfs = [pd.read_csv(file, low_memory=False) for file in csv_files]
     combined_df = pd.concat(dfs, ignore_index=True)
 
-
     # Shuffle dataset to prevent ordering bias
     shuffled_df = combined_df.sample(frac=1, random_state=42).reset_index(drop=True)
     shuffled_df.to_csv(name, index=False)
+
+def load(self, i:int) -> DataFrame:
+    script_location = Path(__file__).resolve().parent
+    name = script_location / "shuffled_datas" / "invalidData.csv"
+
+    if i <= 1:
+        name = script_location / "shuffled_datas" / "dataset.csv"
+    elif i == 2:
+        name = script_location / "shuffled_datas" / "CTU.csv"
+    elif i == 3:
+        name = script_location / "shuffled_datas" / "IDS2017.csv"
+    else:
+        name = script_location / "shuffled_datas" / "ToN-IoT.csv"
 
     # Load shuffled dataset
     df = pd.read_csv(name)
@@ -98,3 +107,5 @@ def shuffle():
 
     # Fill missing values
     df.fillna(0, inplace=True)
+
+    return df
