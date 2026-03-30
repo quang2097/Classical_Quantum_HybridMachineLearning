@@ -1,7 +1,6 @@
 #Load & Merge Attack and Sensor Data
 import pandas as pd
 from pandas import DataFrame
-import sys
 from pathlib import Path
 
 def shuffle(self, i:int) -> None:
@@ -60,9 +59,6 @@ def shuffle(self, i:int) -> None:
             script_location / "./ToN-IoT/xss.csv"
         ]
         name = script_location / "shuffled_datas" / "ToN-IoT.csv"
-    else:
-        print("There does not exist a dataset at index " + i)
-        sys.exit(0)
 
     # Load and concatenate all datasets
     dfs = [pd.read_csv(file, low_memory=False) for file in csv_files]
