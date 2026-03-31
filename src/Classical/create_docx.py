@@ -6,7 +6,7 @@ def create_docx_decision_tree(dt_report_str, dt_plot_buffer, dt_accuracy, cm_plo
     document = Document()
 
     # --- Decision Tree Results ---
-    document.add_heading('Decision Tree Classifier Results (Trained on Undersampled Data)', level=1)
+    document.add_heading('Decision Tree Classifier Results', level=1)
     document.add_paragraph('Evaluation metrics for the Decision Tree Classifier:')
     document.add_paragraph(dt_report_str, 'No Spacing').style.font.name = 'Consolas'
     document.add_paragraph(f'Decision Tree overall accuracy: {dt_accuracy:.2f}.')
@@ -24,9 +24,6 @@ def create_docx_decision_tree(dt_report_str, dt_plot_buffer, dt_accuracy, cm_plo
     # Save the document
     document.save(output_path)
     print(f"\nReport successfully saved to: {output_path}")
-
-    # Run the function to create and save the report with the new confusion matrix image buffer
-    create_docx_decision_tree(dt_report_str, dt_plot_buffer, dt_accuracy, cm_plot_buffer, output_path)
 
 #create bagging classifier docx
 def create_docx_bagging_classifier(bg_report_str, bg_accuracy, cm_plot_buffer, output_path):
@@ -46,9 +43,6 @@ def create_docx_bagging_classifier(bg_report_str, bg_accuracy, cm_plot_buffer, o
     # Save the document
     document.save(output_path)
     print(f"\nReport successfully saved to: {output_path}")
-
-    # Run the function to create and save the report with the new confusion matrix image buffer
-    create_docx_bagging_classifier(bg_report_str, bg_accuracy, cm_plot_buffer, output_path)
 
 #create random forest docx
 def create_docx_random_forest(accuracy, classification_report_str, feature_importance_list, importance_plot_buffer):
@@ -164,3 +158,7 @@ def create_docx_XGBoost():
 #create transformer docx
 def create_docx_transformer():
     return
+
+#create GNN docx
+def create_docx_GNN():
+    return 
