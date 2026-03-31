@@ -1,4 +1,7 @@
-# Load & Merge Attack and Sensor Data
+from pandas import DataFrame
+from src.Classical.create_docx import create_docx_random_forest
+from pathlib import Path
+
 import torch
 import numpy as np
 import pandas as pd
@@ -7,14 +10,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.preprocessing import LabelEncoder
-from docx import Document
-from docx.shared import Inches
-# --- New Imports for Plotting ---
 import matplotlib.pyplot as plt
 import io
-from pandas import DataFrame
-from src.Classical.create_docx import create_docx_random_forest
-from pathlib import Path
 
 def random_forest(df:DataFrame, output_path:Path, name:str) -> None:
     # Load

@@ -1,3 +1,7 @@
+from pandas import DataFrame
+from pathlib import Path
+from src.Classical.create_docx import create_docx_lightGBM
+
 #LIGHTGBM
 import pandas as pd
 from src.Classical import create_docx
@@ -17,9 +21,6 @@ from sklearn.metrics import roc_curve, auc
 # --- FIX: Change the import order ---
 import torch
 import lightgbm as lgb
-
-from pandas import DataFrame
-from pathlib import Path
 
 def lightGBM(df:DataFrame, output_path:Path, name:str):
   device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -253,3 +254,5 @@ def lightGBM(df:DataFrame, output_path:Path, name:str):
     roc_plot_buffer,
     output_path
   )
+
+  create_docx_lightGBM()

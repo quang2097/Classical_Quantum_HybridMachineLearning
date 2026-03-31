@@ -1,6 +1,5 @@
 #Load & Merge Attack and Sensor Data
 import pandas as pd
-from pandas import DataFrame
 from pathlib import Path
 
 def shuffle(self, i:int) -> None:
@@ -18,45 +17,45 @@ def shuffle(self, i:int) -> None:
         name = script_location / "shuffled_datas" / "dataset.csv"
     elif i == 2:
         csv_files = [
-            script_location / "./CTU/menti.csv",
-            script_location / "./CTU/murlo.csv",
-            script_location / "./CTU/neris.csv",
-            script_location / "./CTU/nsisay.csv",
-            script_location / "./CTU/rbot.csv",
-            script_location / "./CTU/sogou.csv",
-            script_location / "./CTU/virut.csv"
+            script_location / "CTU/menti.csv",
+            script_location / "CTU/murlo.csv",
+            script_location / "CTU/neris.csv",
+            script_location / "CTU/nsisay.csv",
+            script_location / "CTU/rbot.csv",
+            script_location / "CTU/sogou.csv",
+            script_location / "CTU/virut.csv"
         ]
         name = script_location / "shuffled_datas" / "CTU.csv"
     elif i == 3:
         csv_files = [
-            script_location / "./IDS2017/bot.csv",
-            script_location / "./IDS2017/ddos.csv",
-            script_location / "./IDS2017/dos_goldeneye.csv",
-            script_location / "./IDS2017/dos_hulk.csv",
-            script_location / "./IDS2017/dos_slowhttptest.csv",
-            script_location / "./IDS2017/dos_slowloris.csv",
-            script_location / "./IDS2017/ftp_patator.csv",
-            script_location / "./IDS2017/heartbleed.csv",
-            script_location / "./IDS2017/infiltration.csv",
-            script_location / "./IDS2017/port_scan.csv",
-            script_location / "./IDS2017/ssh_patator.csv",
-            script_location / "./IDS2017/web_attack_bruteforce.csv",
-            script_location / "./IDS2017/web_attack_sql_injection.csv",
-            script_location / "./IDS2017/web_attack_xss.csv"
+            script_location / "IDS2017/bot.csv",
+            script_location / "IDS2017/ddos.csv",
+            script_location / "IDS2017/dos_goldeneye.csv",
+            script_location / "IDS2017/dos_hulk.csv",
+            script_location / "IDS2017/dos_slowhttptest.csv",
+            script_location / "IDS2017/dos_slowloris.csv",
+            script_location / "IDS2017/ftp_patator.csv",
+            script_location / "IDS2017/heartbleed.csv",
+            script_location / "IDS2017/infiltration.csv",
+            script_location / "IDS2017/port_scan.csv",
+            script_location / "IDS2017/ssh_patator.csv",
+            script_location / "IDS2017/web_attack_bruteforce.csv",
+            script_location / "IDS2017/web_attack_sql_injection.csv",
+            script_location / "IDS2017/web_attack_xss.csv"
         ]
         name = script_location / "shuffled_datas" / "IDS2017.csv"
     elif i >= 4:
         csv_files = [
-            script_location / "./ToN-IoT/backdoor.csv",
-            script_location / "./ToN-IoT/benign_tot.csv",
-            script_location / "./ToN-IoT/ddos.csv",
-            script_location / "./ToN-IoT/dos.csv",
-            script_location / "./ToN-IoT/injection.csv",
-            script_location / "./ToN-IoT/mitm.csv",
-            script_location / "./ToN-IoT/password.csv",
-            script_location / "./ToN-IoT/ransomware.csv",
-            script_location / "./ToN-IoT/scanning.csv",
-            script_location / "./ToN-IoT/xss.csv"
+            script_location / "ToN-IoT/backdoor.csv",
+            script_location / "ToN-IoT/benign_tot.csv",
+            script_location / "ToN-IoT/ddos.csv",
+            script_location / "ToN-IoT/dos.csv",
+            script_location / "ToN-IoT/injection.csv",
+            script_location / "ToN-IoT/mitm.csv",
+            script_location / "ToN-IoT/password.csv",
+            script_location / "ToN-IoT/ransomware.csv",
+            script_location / "ToN-IoT/scanning.csv",
+            script_location / "ToN-IoT/xss.csv"
         ]
         name = script_location / "shuffled_datas" / "ToN-IoT.csv"
 

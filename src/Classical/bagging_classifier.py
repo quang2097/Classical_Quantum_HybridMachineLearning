@@ -1,6 +1,9 @@
+from pandas import DataFrame
+from pathlib import Path
+from src.Classical.create_docx import create_docx_bagging_classifier
+
 import torch
 import pandas as pd
-from pandas import DataFrame
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import BaggingClassifier
@@ -10,24 +13,18 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import confusion_matrix
 import numpy as np
 
-# --- New Imports for Plotting the Tree ---
 import matplotlib.pyplot as plt
 import io
 
-# NEW IMPORT: Seaborn for heatmap visualization
 import seaborn as sns
-from pathlib import Path
-from src.Classical import create_docx
 
 def bagging_classifier(df:DataFrame, output_path:Path, name:str) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     le = LabelEncoder()
 
-    # Convert categorical and object columns to numeric
     for col in df.select_dtypes(include=['object']).columns:
         df[col] = le.fit_transform(df[col])
 
-    # le.classes_ contains the array of original string labels in order of their integer encoding
     target_names = le.classes_
 
     if name == "dataset":
@@ -78,37 +75,24 @@ def bagging_classifier(df:DataFrame, output_path:Path, name:str) -> None:
                      "weird_addl","weird_notice","label","type"], axis=1)
         y = df["type"]
 
-    # --- FIX: Comprehensive handling of non-finite, extreme values, and data types ---
-    # Convert all columns that can be numeric to numeric, coercing errors
     for col in X.columns:
         X[col] = pd.to_numeric(X[col], errors='coerce')
 
-    # Replace any infinity values with NaN
     X = X.replace([np.inf, -np.inf], np.nan)
 
-    # Impute NaN values with the mean of their respective columns
-    # Use numeric_only=True for mean to avoid errors with non-numeric cols if any slipped through
     X = X.fillna(X.mean(numeric_only=True))
 
-    # Cap extreme outliers to prevent 'value too large' issues.
-    # This prevents values from becoming np.inf if scikit-learn internally downcasts to float32.
-    # Cap to the 99.9th percentile and 0.1st percentile
     for col in X.columns:
         if pd.api.types.is_numeric_dtype(X[col]):
             upper_bound = X[col].quantile(0.999)
             lower_bound = X[col].quantile(0.001)
             X[col] = np.clip(X[col], a_min=lower_bound, a_max=upper_bound)
 
-    # Finally, ensure all feature columns are of float64 type for consistency and precision
     X = X.astype(np.float64)
 
-    # Split the data into train and test sets first to prevent data leakage
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-    # Initialize RandomUnderSampler
     rus = RandomUnderSampler(random_state=42)
-
-    # Apply undersampling only to the training set
     X_train_resampled, y_train_resampled = rus.fit_resample(X_train, y_train)
 
     ## Bagging Classifier
@@ -125,11 +109,9 @@ def bagging_classifier(df:DataFrame, output_path:Path, name:str) -> None:
     bg_accuracy = accuracy_score(y_test, y_pred_random)
     print("Bagging Classifier Accuracy: {:.2f}".format(bg_accuracy))
 
-    # --- NEW FUNCTION: Create Confusion Matrix Plot ---
     def plot_confusion_matrix_bytes(cm, class_names):
         """Generates a heatmap plot of the confusion matrix and returns it as bytes."""
         plt.figure(figsize=(10, 8))
-        # Use Seaborn for a clean, colored heatmap
         sns.heatmap(cm,
             annot=True,
             fmt='d',
@@ -144,7 +126,6 @@ def bagging_classifier(df:DataFrame, output_path:Path, name:str) -> None:
         plt.title('Bagging classifier confusion matrix')
 
         buf = io.BytesIO()
-        # Save the figure to the buffer
         plt.savefig(buf, format='png', bbox_inches='tight', dpi=150)
         plt.close()
         buf.seek(0)
@@ -155,6 +136,4 @@ def bagging_classifier(df:DataFrame, output_path:Path, name:str) -> None:
     print("__Generating Confusion Matrix Image for DOCX__")
     cm_plot_buffer = plot_confusion_matrix_bytes(cm, target_names) # Generate the image buffer
 
-    # --- FEATURE: Generate DOCX Report ---
-
-    create_docx.create_docx_bagging_classifier(bg_report_str, bg_accuracy, cm_plot_buffer, output_path)
+    create_docx_bagging_classifier(bg_report_str, bg_accuracy, cm_plot_buffer, output_path)

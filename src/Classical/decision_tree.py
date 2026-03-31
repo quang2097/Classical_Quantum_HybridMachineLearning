@@ -1,4 +1,3 @@
-import torch
 import pandas as pd
 from pandas import DataFrame
 from sklearn.model_selection import train_test_split
@@ -23,20 +22,26 @@ from src.Classical import create_docx
 from pathlib import Path
 
 
-def decision_tree(df:DataFrame, output_path:Path, name:str) -> None:
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    le = LabelEncoder()
+def decision_tree(df: DataFrame, output_path: Path, name: str) -> None:
+    # 1. Identify the target column based on the dataset name
+    target_col = ""
+    if name == "dataset": target_col = "class"
+    elif name == "CTU": target_col = "Label"
+    elif name == "IDS2017": target_col = "label"
+    elif name == "ToN-IoT": target_col = "type"
+    else:
+        print("data name not found.")
+        return
 
-    # Convert categorical and object columns to numeric
-    for col in df.select_dtypes(include=['object']).columns:
-        df[col] = le.fit_transform(df[col])
+    # 2. Encode the Target (y) correctly
+    le_target = LabelEncoder()
+    y = le_target.fit_transform(df[target_col].astype(str))
+    target_names = le_target.classes_  # This now correctly holds ['Normal', 'Attack', etc.]
 
-    # --- Get the Target Names (CORRECT) ---
-    # le.classes_ contains the array of original string labels in order of their integer encoding
-    target_names = le.classes_
-
+    cols_to_drop = []     
+    X = df.drop(columns=cols_to_drop, errors='ignore')
     if name == "dataset":
-        X = df.drop(["frame.time_delta","frame.time_relative","frame.len","ip.src","ip.dst",
+        cols_to_drop = ["frame.time_delta","frame.time_relative","frame.len","ip.src","ip.dst",
                      "tcp.srcport","tcp.dstport","tcp.flags","tcp.time_delta","tcp.len",
                      "tcp.ack","tcp.connection.fin","tcp.connection.rst","tcp.connection.sack","tcp.connection.syn",
                      "tcp.flags.ack","tcp.flags.fin","tcp.flags.push","tcp.flags.reset","tcp.flags.syn",
@@ -46,15 +51,15 @@ def decision_tree(df:DataFrame, output_path:Path, name:str) -> None:
                      "mqtt.conflags","mqtt.dupflag","mqtt.hdrflags","mqtt.kalive","mqtt.len",
                      "mqtt.msg","mqtt.msgtype","mqtt.qos","mqtt.retain","mqtt.topic",
                      "mqtt.topic_len","mqtt.ver","mqtt.willmsg_len","ip.proto","ip.ttl",
-                     "class","label"], axis=1)
+                     "class","label"]
         y = df["class"]
     elif name == "CTU":
-        X = df.drop(["StartTime","Dur","Proto","SrcAddr","Sport",
+        cols_to_drop = ["StartTime","Dur","Proto","SrcAddr","Sport",
                      "Dir","DstAddr","Dport","State","sTos",
-                     "dTos","TotPkts","TotBytes","SrcBytes","Label"], axis=1)
+                     "dTos","TotPkts","TotBytes","SrcBytes","Label"]
         y = df["Label"]
     elif name == "IDS2017":
-        X = df.drop(["Flow ID","Source IP","Source Port","Destination IP","Destination Port",
+        cols_to_drop = ["Flow ID","Source IP","Source Port","Destination IP","Destination Port",
                      "Protocol","Timestamp","Flow Duration","Total Fwd Packets","Total Backward Packets",
                      "Total Length of Fwd Packets","Total Length of Bwd Packets","Fwd Packet Length Max","Fwd Packet Length Min",
                      "Fwd Packet Length Mean","Fwd Packet Length Std","Bwd Packet Length Max","Bwd Packet Length Min","Bwd Packet Length Mean",
@@ -70,7 +75,7 @@ def decision_tree(df:DataFrame, output_path:Path, name:str) -> None:
                      "Fwd Avg Bulk Rate","Bwd Avg Bytes/Bulk","Bwd Avg Packets/Bulk","Bwd Avg Bulk Rate","Subflow Fwd Packets",
                      "Subflow Fwd Bytes","Subflow Bwd Packets","Subflow Bwd Bytes","Init_Win_bytes_forward","Init_Win_bytes_backward",
                      "act_data_pkt_fwd","min_seg_size_forward","Active Mean","Active Std","Active Max",
-                     "Active Min","Idle Mean","Idle Std","Idle Max","Idle Min","label"], axis=1)
+                     "Active Min","Idle Mean","Idle Std","Idle Max","Idle Min","label"]
         y = df["label"]
     elif name == "ToN-IoT":
         X = df.drop(["src_ip","dst_ip","proto","service","conn_state",
@@ -82,17 +87,19 @@ def decision_tree(df:DataFrame, output_path:Path, name:str) -> None:
                      "http_status_code","http_user_agent","http_orig_mime_types","http_resp_mime_types","weird_name",
                      "weird_addl","weird_notice","label","type"], axis=1)
         y = df["type"]
+    else:
+        print("data name not found.")
+        return
 
 
-    # --- FIX: Comprehensive handling of non-finite, extreme values, and data types ---
-    # Convert all columns that can be numeric to numeric, coercing errors
-    for col in X.columns:
-        X[col] = pd.to_numeric(X[col], errors='coerce')
+    # 4. Encode categorical FEATURES (not the label)
+    le_feat = LabelEncoder()
+    for col in X.select_dtypes(include=['object']).columns:
+        X[col] = le_feat.fit_transform(X[col].astype(str))
 
     # Replace any infinity values with NaN
     X = X.replace([np.inf, -np.inf], np.nan)
 
-    # Impute NaN values with the mean of their respective columns
     # Use numeric_only=True for mean to avoid errors with non-numeric cols if any slipped through
     X = X.fillna(X.mean(numeric_only=True))
 

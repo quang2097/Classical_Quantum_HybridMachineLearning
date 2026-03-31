@@ -140,3 +140,27 @@ def create_docx_lightBGM(auc_score, accuracy, classification_report_str, top_fea
     # Save the document
     document.save(output_path)
     print(f"\nReport successfully saved to: {output_path}")
+
+#create lightGBM docx
+def create_docx_lightGBM():
+    return
+
+#create RNN docx
+def create_docx_RNN():
+    return
+
+#create CNN docx
+def create_docx_CNN():
+    return
+
+#create linearSVM docx
+def create_docx_linearSVM():
+    return
+
+#create XGBoost docx
+def create_docx_XGBoost():
+    return
+
+#create transformer docx
+def create_docx_transformer():
+    return
