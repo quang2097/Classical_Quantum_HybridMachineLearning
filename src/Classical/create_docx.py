@@ -45,7 +45,7 @@ def create_docx_bagging_classifier(bg_report_str, bg_accuracy, cm_plot_buffer, o
     print(f"\nReport successfully saved to: {output_path}")
 
 #create random forest docx
-def create_docx_random_forest(accuracy, classification_report_str, feature_importance_list, importance_plot_buffer):
+def create_docx_random_forest(accuracy, classification_report_str, feature_importance_list, importance_plot_buffer, output_path):
     """Generates a DOCX report for the Random Forest model and saves it to Google Drive."""
     document = Document()
 
@@ -79,9 +79,8 @@ def create_docx_random_forest(accuracy, classification_report_str, feature_impor
         document.add_paragraph(item, style='List Bullet')
 
     # Save the document to your Google Drive
-    output_path = '/content/drive/MyDrive/Random_Forest_Report ToN-IoT_Undersampled.docx'
     document.save(output_path)
-    print(f"\nReport successfully saved to Google Drive at: {output_path}")
+    print(f"\nReport successfully saved to: {output_path}")
 
 
 #create lightBGM docx

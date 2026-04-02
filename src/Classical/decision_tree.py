@@ -18,7 +18,7 @@ import seaborn as sns
 
 def decision_tree(df: DataFrame, output_path: Path, name: str) -> None:
     target_col = ""
-    if name == "dataset": target_col = "label"
+    if name == "dataset": target_col = "class"
     elif name == "CTU": target_col = "Label"
     elif name == "IDS2017": target_col = "label"
     elif name == "ToN-IoT": target_col = "type"
@@ -29,6 +29,9 @@ def decision_tree(df: DataFrame, output_path: Path, name: str) -> None:
     le_target = LabelEncoder()
     y = le_target.fit_transform(df[target_col].astype(str))
     target_names = le_target.classes_
+        
+    for col in df.select_dtypes(include=['object']).columns:
+        df[col] = pd.to_numeric(df[col], errors='coerce')
 
     cols_to_drop = []     
     if name == "dataset":
@@ -90,7 +93,7 @@ def decision_tree(df: DataFrame, output_path: Path, name: str) -> None:
 
     for col in X.select_dtypes(include=['object']).columns:
         le = LabelEncoder()
-        X[col] = le.fit_transform(X[col].astype(str))
+        X[col] = le.fit_transform(X[col].astype(int))
 
     X = X.replace([np.inf, -np.inf], np.nan)
     X = X.fillna(X.mean(numeric_only=True))
